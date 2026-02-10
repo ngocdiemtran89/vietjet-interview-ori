@@ -3,8 +3,10 @@ import { database } from './data.js';
 import { Clerk } from '@clerk/clerk-js';
 
 // --- CONFIGURATION ---
-const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-const allowedDomains = (import.meta.env.VITE_ALLOWED_DOMAINS || '').split(',').map(d => d.trim());
+// Publishable Key is safe to embed (it's public by design)
+const clerkPubKey = 'pk_test_ZGVmaW5pdGUtc3dhbi02Mi5jbGVyay5hY2NvdW50cy5kZXYk';
+// Add allowed email domains here (comma-separated)
+const allowedDomains = ['gmail.com'];
 
 // --- DOM ELEMENTS ---
 const signInContainer = document.getElementById('sign-in-container');
