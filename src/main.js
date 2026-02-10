@@ -1,6 +1,6 @@
 import './style.css';
 import { database } from './data.js';
-import Clerk from '@clerk/clerk-js';
+import { Clerk } from '@clerk/clerk-js';
 
 // --- CONFIGURATION ---
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -64,11 +64,12 @@ function showSetupError(msg) {
         </div>
     `;
     signInContainer.classList.remove('hidden');
-    appContainer.classList.add('hidden');
+    // Ensure hidden
+    appContainer.style.display = 'none';
 }
 
 function mountSignIn() {
-    appContainer.classList.add('hidden');
+    appContainer.style.display = 'none'; // Force hide
     signInContainer.classList.remove('hidden');
 
     clerk.mountSignIn(signInContainer, {
@@ -93,15 +94,17 @@ function checkAccess(user) {
     if (isAllowed) {
         // Access Granted
         signInContainer.classList.add('hidden');
-        appContainer.classList.remove('hidden');
+        appContainer.style.display = 'block'; // Force show
         accessDeniedModal.classList.add('hidden');
+        accessDeniedModal.style.display = 'none';
 
         // Mount User Button (Profile/SignOut)
         clerk.mountUserButton(userButtonDiv);
     } else {
         // Access Denied
         signInContainer.classList.add('hidden');
-        appContainer.classList.add('hidden');
+        appContainer.style.display = 'none'; // Force hide
+
         accessDeniedModal.classList.remove('hidden');
         accessDeniedModal.style.display = 'flex'; // Ensure flex layout for centering
     }
