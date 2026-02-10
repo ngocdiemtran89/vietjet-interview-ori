@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vietjet Air - Interview with AI-ORI</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script type="module" src="/src/main.js"></script>
+</head>
+
+<body class="flex flex-col items-center py-10 px-4">
+
+    <!-- Cloud Background Animation -->
+    <div class="cloud-bg">
+        <i class="fa-solid fa-cloud cloud text-6xl" style="top: 10%; left: -10%; animation-duration: 40s;"></i>
+        <i class="fa-solid fa-cloud cloud text-4xl" style="top: 30%; left: -20%; animation-duration: 30s;"></i>
+        <i class="fa-solid fa-cloud cloud text-8xl" style="top: 60%; left: -15%; animation-duration: 50s;"></i>
+        <i class="fa-solid fa-cloud cloud text-5xl" style="top: 80%; left: -5%; animation-duration: 35s;"></i>
+    </div>
+
+    <div class="w-full max-w-4xl relative z-10">
+
+        <!-- Header: Text Branding Only -->
+        <div class="text-center mb-10 pt-4">
+            <h1 class="text-5xl md:text-6xl font-bold text-white drop-shadow-lg mb-3 tracking-tight"
+                style="text-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                ORI TOEIC
+            </h1>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-3 mb-2">
+                <span class="hidden md:block h-0.5 w-12 bg-white opacity-90 shadow-sm"></span>
+                <p class="text-lg md:text-xl font-bold text-white uppercase tracking-wider text-shadow-sm text-center">
+                    Đào tạo phỏng vấn hàng không từ 2016 đến nay
+                </p>
+                <span class="hidden md:block h-0.5 w-12 bg-white opacity-90 shadow-sm"></span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- LEFT COLUMN: Main Practice Tool -->
+            <div class="lg:col-span-2 glass-card p-6 md:p-8 relative overflow-hidden h-fit">
+                <!-- Decorative Stripe -->
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-ori-navy via-ori-gold to-ori-navy">
+                </div>
+
+                <!-- Controls -->
+                <div class="mb-6 bg-blue-50/80 p-4 rounded-xl border border-blue-100">
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">
+                        <i class="fa-solid fa-layer-group mr-1"></i> Chọn chủ đề luyện tập
+                    </label>
+                    <div class="flex flex-col gap-3">
+                        <div class="relative w-full">
+                            <select id="category"
+                                class="w-full p-3 bg-white text-gray-700 cursor-pointer font-medium shadow-sm">
+                                <option value="intro_motivation">1. Giới thiệu & Động lực (Intro & Motivation)</option>
+                                <option value="customer_service">2. Lỗi Dịch Vụ - Khách Đúng (Service Recovery)</option>
+                                <option value="customer_compliance">3. Khách Sai - An Toàn & Tuân Thủ (Compliance)
+                                </option>
+                                <option value="coworker_difficulty">4. Kỹ năng làm việc nhóm (Teamwork)</option>
+                                <option value="stress">5. Quản lý áp lực (Stress Management)</option>
+                            </select>
+                            <div
+                                class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-ori-navy">
+                                <i class="fa-solid fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
+                        <button id="getQuestionBtn"
+                            class="btn-primary w-full py-3 uppercase text-sm flex items-center justify-center gap-2 shadow-lg">
+                            <i class="fa-solid fa-paper-plane"></i> Lấy câu hỏi
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Question & Practice Area -->
+                <div id="practiceArea" class="hidden animate-fade-in">
+                    <div class="mb-6">
+                        <span
+                            class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full uppercase mb-3 inline-block">
+                            <i class="fa-regular fa-circle-question mr-1"></i> Question
+                        </span>
+                        <h2 id="questionText"
+                            class="text-xl md:text-2xl font-bold text-gray-800 leading-snug mb-4 pl-3 border-l-4 border-ori-gold">
+                        </h2>
+
+                        <textarea id="userAnswer" rows="4"
+                            class="w-full p-4 bg-gray-50 text-gray-700 text-sm md:text-base mb-4 placeholder-gray-400 focus:bg-white"
+                            placeholder="Ghi chú câu trả lời của bạn tại đây..."></textarea>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <button id="toggleHintBtn"
+                                class="btn-outline py-2 px-3 font-bold text-xs md:text-sm flex flex-col md:flex-row items-center justify-center gap-2 hover:bg-yellow-50 hover:border-yellow-400 hover:text-yellow-700">
+                                <i class="fa-regular fa-lightbulb text-lg"></i> <span>Công thức Tư duy</span>
+                            </button>
+                            <button id="toggleSampleBtn"
+                                class="btn-outline py-2 px-3 font-bold text-xs md:text-sm flex flex-col md:flex-row items-center justify-center gap-2 hover:bg-blue-50 hover:border-blue-400 hover:text-blue-700">
+                                <i class="fa-solid fa-book-open text-lg"></i> <span>Bài mẫu</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Hint Section -->
+                    <div id="hintBox"
+                        class="hidden mt-4 bg-yellow-50 rounded-xl p-4 border border-yellow-200 shadow-sm relative">
+                        <div
+                            class="absolute -top-3 left-4 bg-yellow-400 text-white text-xs font-bold px-2 py-1 rounded">
+                            EXPERT FORMULA
+                        </div>
+                        <h3 id="hintTitle" class="text-yellow-800 font-bold text-sm mb-2 mt-2"></h3>
+                        <div id="hintContent" class="text-sm text-gray-700 whitespace-pre-line leading-relaxed"></div>
+                    </div>
+
+                    <!-- Sample Section -->
+                    <div id="sampleBox"
+                        class="hidden mt-4 bg-white rounded-xl p-4 border border-gray-200 shadow-sm relative">
+                        <div class="absolute -top-3 left-4 bg-ori-navy text-white text-xs font-bold px-2 py-1 rounded">
+                            SAMPLE
+                        </div>
+                        <div class="flex justify-end mb-1">
+                            <button id="copySampleBtn"
+                                class="text-xs text-gray-400 hover:text-ori-gold transition-colors" title="Copy">
+                                <i class="fa-regular fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <div id="sampleContent"
+                            class="text-sm text-gray-800 whitespace-pre-line leading-relaxed pl-3 border-l-2 border-gray-100">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Welcome Placeholder -->
+                <div id="placeholder" class="text-center py-12 opacity-60">
+                    <i class="fa-solid fa-plane-circle-check text-6xl text-gray-300 mb-4"></i>
+                    <p class="text-lg font-medium text-gray-500">Ready for Take-off?</p>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: ORI Course Introduction -->
+            <div class="lg:col-span-1 space-y-4">
+
+                <!-- Course Info Card -->
+                <div class="glass-card p-5 border-t-4 border-ori-gold">
+                    <div class="text-center mb-4">
+                        <h3 class="text-lg font-bold text-ori-navy uppercase border-b pb-2">Khóa Coaching Phỏng Vấn</h3>
+                        <p class="text-xs text-ori-gold font-bold mt-1">CHUYÊN SÂU & CAM KẾT ĐẦU RA</p>
+                    </div>
+
+                    <ul class="space-y-4 text-sm text-gray-700 mb-6">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check-circle text-green-500 mt-1 flex-shrink-0"></i>
+                            <span class="text-justify">Thực hành <strong>Roleplay 1:1</strong> với giáo viên hơn 10 năm
+                                kinh nghiệm đào tạo hàng không.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check-circle text-green-500 mt-1 flex-shrink-0"></i>
+                            <span class="text-justify">Chỉnh sửa <strong>Giọng nói</strong>, ngữ điệu tiếng Anh tự
+                                nhiên.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check-circle text-green-500 mt-1 flex-shrink-0"></i>
+                            <span class="text-justify">Đảm bảo thành thạo giao tiếp mọi chủ đề trong kỳ phỏng vấn với
+                                việc hiểu <strong>MINDSET</strong> của Nhân Sự tuyển dụng.</span>
+                        </li>
+                    </ul>
+
+                    <a href="#"
+                        class="block w-full py-3 bg-ori-navy text-white text-center rounded-lg font-bold text-sm hover:bg-opacity-90 transition shadow-md">
+                        ĐĂNG KÝ TƯ VẤN NGAY
+                    </a>
+                </div>
+
+                <!-- Contact Info Small -->
+                <div class="glass-card p-4 text-center">
+                    <p class="text-xs text-gray-500 font-bold mb-2 uppercase">Liên hệ tư vấn</p>
+                    <div class="space-y-1 text-sm font-semibold text-ori-navy">
+                        <p><i class="fa-solid fa-phone text-ori-gold mr-1"></i> 0906 303 373 (Mrs Diễm)</p>
+                        <p><i class="fa-solid fa-phone text-ori-gold mr-1"></i> 0778 845 689 (Mrs Loan)</p>
+                    </div>
+                    <div class="mt-3 pt-3 border-t border-gray-200 text-xs text-gray-500">
+                        <i class="fa-solid fa-map-pin text-red-500 mr-1"></i> 135 Bạch Đằng, P.2, Q.Tân Bình
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
