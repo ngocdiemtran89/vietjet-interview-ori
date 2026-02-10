@@ -3,10 +3,9 @@ import { database } from './data.js';
 import { Clerk } from '@clerk/clerk-js';
 
 // --- CONFIGURATION ---
-// Publishable Key is safe to embed (it's public by design)
-const clerkPubKey = 'pk_test_ZGVmaW5pdGUtc3dhbi02Mi5jbGVyay5hY2NvdW50cy5kZXYk';
-// Add allowed email domains here (comma-separated)
-const allowedDomains = ['gmail.com'];
+// Get key from .env
+const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+const allowedDomains = (import.meta.env.VITE_ALLOWED_DOMAINS || '').split(',');
 
 // --- DOM ELEMENTS ---
 const signInContainer = document.getElementById('sign-in-container');
@@ -14,7 +13,7 @@ const appContainer = document.getElementById('app-container');
 const accessDeniedModal = document.getElementById('access-denied');
 const userButtonDiv = document.getElementById('user-button');
 const signOutBtn = document.getElementById('sign-out-btn');
-// App elements
+
 const categorySelect = document.getElementById('category');
 const getQuestionBtn = document.getElementById('getQuestionBtn');
 const practiceArea = document.getElementById('practiceArea');
@@ -45,15 +44,13 @@ async function initClerk() {
         await clerk.load();
 
         if (clerk.user) {
-            // User is signed in
             checkAccess(clerk.user);
         } else {
-            // User is not signed in -> Mount Sign In
             mountSignIn();
         }
     } catch (err) {
         console.error("Clerk Init Error:", err);
-        showSetupError("Error initializing Clerk. Check your Publishable Key.");
+        showSetupError("Error initializing Clerk. Please check your configuration.");
     }
 }
 
@@ -62,16 +59,14 @@ function showSetupError(msg) {
         <div class="text-center p-6 bg-red-50 border border-red-200 rounded-xl text-red-800">
             <h3 class="font-bold text-lg mb-2"><i class="fa-solid fa-triangle-exclamation"></i> Configuration Required</h3>
             <p class="text-sm">${msg}</p>
-            <p class="text-xs mt-2 text-gray-500">Please update .env file with your Clerk keys.</p>
         </div>
     `;
     signInContainer.classList.remove('hidden');
-    // Ensure hidden
     appContainer.style.display = 'none';
 }
 
 function mountSignIn() {
-    appContainer.style.display = 'none'; // Force hide
+    appContainer.style.display = 'none';
     signInContainer.classList.remove('hidden');
 
     clerk.mountSignIn(signInContainer, {
@@ -88,42 +83,44 @@ function checkAccess(user) {
     const userEmail = user.primaryEmailAddress.emailAddress;
     const userDomain = userEmail.split('@')[1];
 
-    // Check if email domain is allowed
-    // Note: In a real app, you might check specific emails or call a backend.
-    // Here we use a client-side allowed list from env for simplicity/demo.
+    // Check allowed domains
     const isAllowed = allowedDomains.includes(userDomain) || allowedDomains.includes(userEmail);
 
     if (isAllowed) {
-        // Access Granted
+        // Grant Access
         signInContainer.classList.add('hidden');
-        appContainer.style.display = 'block'; // Force show
+        appContainer.classList.remove('hidden');
+        appContainer.style.display = 'block';
         accessDeniedModal.classList.add('hidden');
         accessDeniedModal.style.display = 'none';
 
-        // Mount User Button (Profile/SignOut)
         clerk.mountUserButton(userButtonDiv);
     } else {
-        // Access Denied
+        // Deny Access
         signInContainer.classList.add('hidden');
-        appContainer.style.display = 'none'; // Force hide
+        appContainer.style.display = 'none';
 
         accessDeniedModal.classList.remove('hidden');
-        accessDeniedModal.style.display = 'flex'; // Ensure flex layout for centering
+        accessDeniedModal.style.display = 'flex';
     }
 }
 
-// Sign Out Logic for Access Denied Modal
-signOutBtn.addEventListener('click', async () => {
-    await clerk.signOut();
-    location.reload();
-});
-
+// Sign Out Logic
+if (signOutBtn) {
+    signOutBtn.addEventListener('click', async () => {
+        await clerk.signOut();
+        location.reload();
+    });
+}
 
 // --- APP LOGIC ---
 getQuestionBtn.addEventListener('click', getQuestion);
 toggleHintBtn.addEventListener('click', () => toggleSection(hintBox));
 toggleSampleBtn.addEventListener('click', () => toggleSection(sampleBox));
 copySampleBtn.addEventListener('click', copySample);
+
+// Start App
+initClerk();
 
 function getQuestion() {
     const category = categorySelect.value;
@@ -173,6 +170,3 @@ function copySample() {
         console.error('Failed to copy: ', err);
     });
 }
-
-// Start App
-initClerk();
